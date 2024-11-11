@@ -1,0 +1,28 @@
+version: 2.1
+
+jobs:
+  sonar_scan:
+    docker:
+      - image: circleci/openjdk:11-jdk
+    steps:
+      - checkout
+      - run:
+          name: Install Sonar Scanner
+          command: |
+            curl -o /tmp/sonar-scanner.zip -L https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+            unzip /tmp/sonar-scanner.zip -d /tmp
+            export PATH=$PATH:/tmp/sonar-scanner-4.6.2.2472-linux/bin
+      - run:
+          name: SonarQube Scan
+          command: |
+            sonar-scanner \
+              -Dsonar.projectKey=APDS Part3 \
+              -Dsonar.organization=ST10073402 \
+              -Dsonar.host.url=https://sonarcloud.io \
+              -Dsonar.login=ad7b17497c632837cb4879b8ba1de4ec1c412b06
+
+workflows:
+  version: 2
+  sonar_workflow:
+    jobs:
+      - sonar_scan
